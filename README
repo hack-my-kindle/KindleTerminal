@@ -1,0 +1,65 @@
+kiterm -- browser-based terminal for the kindle
+
+This package is a simplified and stripped down port of the AjaxTerm
+program that is suitable for operation on the Kindle.
+
+AjaxTerm uses some simple javascript on the client to access a
+server in charge of forking shells (and keeping them alive)
+and pass tty data across the HTTP connection.
+This approach is especially useful on the kindle, where
+running an xterm or a shell in console mode is challenging.
+Instead, the browser can be used for this.
+
+The original AjaxTerm uses a Python script, with the usual amount
+of classes, to implement its services.
+I have completely reimplemented the program in C, using a
+single process that handles multiple connections and forks
+the child shells as desired.
+The javascript has also been heavily simplified, removing
+unnecessary libraries.
+
+The tarball includes:
++ this README
++ myts.c (source code for the server)
++ myts.arm	-- a version of the server compiled for the kindle
++ ajaxterm.{html,js,css},		html files
+
+To use the program you must run the server from the
+directory where the javascript files are, and then
+launch a browser to
+
+	 http://localhost:8022/
+
+On the kindle, ALT maps to CTRL, and the ESC key is the
+"page back" key on the left of the screen.
+
+TODO:
+At this stage the program is still a bit experimental in that it
+still needs work on two areas, namely process management
+and terminal emulation. In particular:
+
+    + complete ANSI control code emulation
+	not all ANSI sequences are recognised, though
+	most things work (top, vi, ...). The missing sequences
+	mostly refer to color handling.
+
+    + reconnect to existing sessions
+	at the moment each session uses a random key so
+	if the browser dies or disconnects, you cannot
+	reach the existing session anymore
+
+    + session termination
+	shells remain alive until the server terminates.
+	I should implement a way to explicitly kill
+	a session or connect to one of the existing ones.
+
+
+
+=== References ===
+
+http://antony.lesuisse.org/software/ajaxterm/
+
+wget http://antony.lesuisse.org/ajaxterm/files/Ajaxterm-0.10.tar.gz
+    tar zxvf Ajaxterm-0.10.tar.gz
+    cd Ajaxterm-0.10
+    ./ajaxterm.py
